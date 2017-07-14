@@ -20,9 +20,15 @@ variable "zones" {
   type        = "list"
 }
 
+variable "default_table" {
+  description = "The default routing table, which overrides the per availability zones"
+  default     = ""
+}
+
 variable "tables" {
   description = "A map of availability zone to routing table id, so we can association subnets"
   type        = "map"
+  default     = {}
 }
 
 variable "network_mask" {

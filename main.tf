@@ -34,8 +34,15 @@ resource "aws_subnet" "subnets" {
 }
 
 # Add the association to the routing table for this availability zone
-resource "aws_route_table_association" "routes" {
-  count          = "${length(var.zones)}"
+resource "aws_route_table_association" "zone_routes" {
+  count          = "${var.default_table == "" ? length(var.zones) : 0}"
   subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
   route_table_id = "${lookup(var.tables, element(aws_subnet.subnets.*.availability_zone, count.index))}"
+}
+
+# Add the route to the default routing table instead
+resource "aws_route_table_association" "default_route" {
+  count          = "${var.default_table != "" ? 1 : length(var.zones)}"
+  subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
+  route_table_id = "${var.default_table}"
 }
