@@ -8,10 +8,12 @@ variable "environment" {
 
 variable "zones" {
   description = "A list of availability zones where you want to build the subnets"
+  type        = "list"
 }
 
 variable "tables" {
   description = "A map of availability zone to routing table id, so we can association subnets"
+  type        = "map"
 }
 
 variable "network_offset" {
