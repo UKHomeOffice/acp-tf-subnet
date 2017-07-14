@@ -42,7 +42,7 @@ resource "aws_route_table_association" "zone_routes" {
 
 # Add the route to the default routing table instead
 resource "aws_route_table_association" "default_route" {
-  count          = "${var.default_table != "" ? 1 : length(var.zones)}"
+  count          = "${var.default_table != "" ? length(var.zones) : 0}"
   subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
   route_table_id = "${var.default_table}"
 }
