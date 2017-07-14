@@ -30,7 +30,7 @@ resource "aws_subnet" "subnets" {
   availability_zone = "${var.zones[count.index]}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, var.network_mask, count.index + var.network_offset)}"
 
-  tags = "${merge(var.tags, map("Name", format("%s", var.name)), map("Env", format("%s", var.environment)), map("KubernetesCluster", format("%s", var.environment)) )}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", format("%s", var.environment)), map("KubernetesCluster", format("%s", var.environment)) )}"
 }
 
 # Add the association to the routing table for this availability zone
