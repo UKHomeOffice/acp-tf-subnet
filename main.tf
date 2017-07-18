@@ -4,7 +4,7 @@
  *       module "github.com/UKHomeOffice/acp-tf-pool" {
  *         name            = "ingress"
  *         environment     = "dev"            # by default both Name and Env is added to the tags
- *         vpn_id          = "${module.infra.vpc_id}"
+ *         vpc_id          = "${module.infra.vpc_id}"
  *         tags            = {
  *           Role = "ingress"
  *         }
