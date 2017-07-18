@@ -17,6 +17,11 @@
  *
  */
 
+# Get the VPC id
+data "aws_vpc" "selected" {
+  id = "${var.vpc_id}"
+}
+
 # Create the subnets used by the pool
 resource "aws_subnet" "subnets" {
   count             = "${length(var.zones)}"
