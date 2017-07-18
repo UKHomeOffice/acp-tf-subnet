@@ -4,7 +4,6 @@
  *       module "github.com/UKHomeOffice/acp-tf-pool" {
  *         name            = "ingress"
  *         environment     = "dev"            # by default both Name and Env is added to the tags
- *         vpc_id          = "${module.infra.vpc_id}"
  *         tags            = {
  *           Role = "ingress"
  *         }
@@ -19,13 +18,15 @@
 
 # Get the VPC id
 data "aws_vpc" "selected" {
-  id = "${var.vpc_id}"
+  tags {
+    Env = "${var.environment}"
+  }
 }
 
 # Create the subnets used by the pool
 resource "aws_subnet" "subnets" {
   count             = "${length(var.zones)}"
-  vpc_id            = "${var.vpc_id}"
+  vpc_id            = "${data.aws_vpc.selected.id}"
   availability_zone = "${var.zones[count.index]}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, var.network_mask, count.index + var.network_offset)}"
 
@@ -34,8 +35,6 @@ resource "aws_subnet" "subnets" {
 
 # Add the association to the routing table for this availability zone
 resource "aws_route_table_association" "zone_routes" {
-  depends_on     = [ "aws_subnet.subnets" ]
-
   count          = "${var.default_table == "" ? length(var.zones) : 0}"
   subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
   route_table_id = "${lookup(var.tables, element(aws_subnet.subnets.*.availability_zone, count.index))}"
@@ -43,8 +42,6 @@ resource "aws_route_table_association" "zone_routes" {
 
 # Add the route to the default routing table instead
 resource "aws_route_table_association" "default_route" {
-  depends_on     = [ "aws_subnet.subnets" ]
-
   count          = "${var.default_table != "" ? length(var.zones) : 0}"
   subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
   route_table_id = "${var.default_table}"
