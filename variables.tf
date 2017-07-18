@@ -6,6 +6,10 @@ variable "environment" {
   description = "An envionment name for the subnets i.e. prod, dev, ci etc"
 }
 
+variable "vpc_id" {
+  description = "The VPC id you are creating the subnets in"
+}
+
 variable "network_offset" {
   description = "A network offset to generate the subnets from i.e. if mask = 8 and offset 100, it will create 10.40.10{1,2,3}"
 }

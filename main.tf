@@ -4,6 +4,7 @@
  *       module "github.com/UKHomeOffice/acp-tf-pool" {
  *         name            = "ingress"
  *         environment     = "dev"            # by default both Name and Env is added to the tags
+ *         vpn_id          = "${module.infra.vpc_id}"
  *         tags            = {
  *           Role = "ingress"
  *         }
@@ -16,17 +17,10 @@
  *
  */
 
-# Get the VPC for this environment
-data "aws_vpc" "selected" {
-  tags {
-    Env  = "${var.environment}"
-  }
-}
-
 # Create the subnets used by the pool
 resource "aws_subnet" "subnets" {
   count             = "${length(var.zones)}"
-  vpc_id            = "${data.aws_vpc.selected.id}"
+  vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.zones[count.index]}"
   cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, var.network_mask, count.index + var.network_offset)}"
 
