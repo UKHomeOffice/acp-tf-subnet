@@ -2,6 +2,14 @@ variable "name" {
   description = "A descriptive name for this subnets"
 }
 
+variable "vpc_id" {
+  description = "The VPC id where you want to create the cluster"
+}
+
+variable "vpc_cidr" {
+  description = "The VPC network cidr for this cluster"
+}
+
 variable "environment" {
   description = "An envionment name for the subnets i.e. prod, dev, ci etc"
 }

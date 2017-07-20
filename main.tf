@@ -16,19 +16,12 @@
  *
  */
 
-# Get the VPC id
-data "aws_vpc" "selected" {
-  tags {
-    Env = "${var.environment}"
-  }
-}
-
 # Create the subnets used by the pool
 resource "aws_subnet" "subnets" {
   count             = "${length(var.zones)}"
-  vpc_id            = "${data.aws_vpc.selected.id}"
+  vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.zones[count.index]}"
-  cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, var.network_mask, count.index + var.network_offset)}"
+  cidr_block        = "${cidrsubnet(var.vpc_cidr, var.network_mask, count.index + var.network_offset)}"
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
