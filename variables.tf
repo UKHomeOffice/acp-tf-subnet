@@ -7,7 +7,8 @@ variable "vpc_id" {
 }
 
 variable "vpc_cidr" {
-  description = "The VPC network cidr for this cluster"
+  description = "The VPC network cidr for this cluster, required if you are using var.network_mask and var.network_offset"
+  default     = ""
 }
 
 variable "environment" {
