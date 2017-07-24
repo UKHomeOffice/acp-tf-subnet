@@ -9,10 +9,12 @@
  *         }
  *         tables  = "${module.infra.routing_tables}"
  *         zones   = [ a_list_zones ]
- *         network_offset  = 20
+ *         # You can specify the CIDR either by subnet_cidr or passing the var.network_mask and var.network_offtset which uses cidrsubnet
+ *         subnet_cidr     = "10.100.0.0/24"
+ *         # or
+ *         network_mask    = 8                # assuming vpc 10.100/16 this would give 10.100.20.0/24
+ *         network_offset  = 20               # will use the cidrsubnet function to calculate or use cidr
  *       }
- *
- *       Assuming eu-west-1{a,b,c} for zones and a vpc cidr of 10.80/16, this would create: 10.80.2{1,2,3}/24
  *
  */
 
@@ -21,7 +23,7 @@ resource "aws_subnet" "subnets" {
   count             = "${length(var.zones)}"
   vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.zones[count.index]}"
-  cidr_block        = "${cidrsubnet(var.vpc_cidr, var.network_mask, count.index + var.network_offset)}"
+  cidr_block        = "${var.subnet_cidr != "" ? var.subnet_cidr : cidrsubnet(var.vpc_cidr, var.network_mask, count.index + var.network_offset)}"
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }

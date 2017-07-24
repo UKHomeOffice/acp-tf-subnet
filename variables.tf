@@ -14,8 +14,14 @@ variable "environment" {
   description = "An envionment name for the subnets i.e. prod, dev, ci etc"
 }
 
+variable "subnet_cidr" {
+  description = "The subnet cidr which you are creating, you can use this or the cidrsubnet() calculated by var.network_mask and var.network_offset"
+  default     = ""
+}
+
 variable "network_offset" {
   description = "A network offset to generate the subnets from i.e. if mask = 8 and offset 100, it will create 10.40.10{1,2,3}"
+  default     = ""
 }
 
 variable "tags" {
