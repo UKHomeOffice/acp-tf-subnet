@@ -29,7 +29,7 @@ Module usage:
 | subnet_cidr | The subnet cidr which you are creating, you can use this or the cidrsubnet() calculated by var.network_mask and var.network_offset | `` | no |
 | tables | A map of availability zone to routing table id, so we can association subnets | `<map>` | no |
 | tags | A map of cloud tags which added to the subnets, note Name, Env and KubernetesCluster are added by default | `<map>` | no |
-| vpc_cidr | The VPC network cidr for this cluster | - | yes |
+| vpc_cidr | The VPC network cidr for this cluster, required if you are using var.network_mask and var.network_offset | `` | no |
 | vpc_id | The VPC id where you want to create the cluster | - | yes |
 | zones | A list of availability zones where you want to build the subnets | - | yes |
 
