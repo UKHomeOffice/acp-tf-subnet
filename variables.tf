@@ -15,6 +15,10 @@ variable "environment" {
   description = "An envionment name for the subnets i.e. prod, dev, ci etc"
 }
 
+variable "dns_zone" {
+  description = "The DNS zone for the kubernetes cluster, due because the tools require the subnet is tagged with it"
+}
+
 variable "subnet_cidr" {
   description = "The subnet cidr which you are creating, you can use this or the cidrsubnet() calculated by var.network_mask and var.network_offset"
   default     = ""
