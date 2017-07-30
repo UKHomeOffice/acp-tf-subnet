@@ -22,6 +22,7 @@ Module usage:
 | Name | Description | Default | Required |
 |------|-------------|:-----:|:-----:|
 | default_table | The default routing table, which overrides the per availability zones | `` | no |
+| dns_zone | The DNS zone for the kubernetes cluster, due because the tools require the subnet is tagged with it | - | yes |
 | environment | An envionment name for the subnets i.e. prod, dev, ci etc | - | yes |
 | name | A descriptive name for this subnets | - | yes |
 | network_mask | The network mask which is applied when creating the subnets | `8` | no |
