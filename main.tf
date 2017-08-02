@@ -25,7 +25,12 @@ resource "aws_subnet" "subnets" {
   availability_zone = "${var.zones[count.index]}"
   cidr_block        = "${var.subnet_cidr != "" ? var.subnet_cidr : cidrsubnet(var.vpc_cidr, var.network_mask, count.index + var.network_offset)}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags,
+    map("Name", format("%s-%s.%s.%s", var.name, var.zones[count.index], var.environment, var.dns_zone)),
+    map("Env", var.environment),
+    map("Role", "nat-subnets"),
+    map("KubernetesCluster", format("%s.%s", var.environment, var.dns_zone)),
+    map(format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone), "shared"))}"
 }
 
 # Add the association to the routing table for this availability zone
