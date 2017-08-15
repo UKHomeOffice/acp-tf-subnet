@@ -28,7 +28,6 @@ resource "aws_subnet" "subnets" {
   tags = "${merge(var.tags,
     map("Name", format("%s-%s.%s.%s", var.name, var.zones[count.index], var.environment, var.dns_zone)),
     map("Env", var.environment),
-    map("Role", "nat-subnets"),
     map("KubernetesCluster", format("%s.%s", var.environment, var.dns_zone)),
     map(format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone), "shared"))}"
 }
