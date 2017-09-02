@@ -27,6 +27,7 @@ Module usage:
 | name | A descriptive name for this subnets | - | yes |
 | network_mask | The network mask which is applied when creating the subnets | `8` | no |
 | network_offset | A network offset to generate the subnets from i.e. if mask = 8 and offset 100, it will create 10.40.10{1,2,3} | `` | no |
+| ownership | Kubernetes cloud ownership tag, i.e. shared or owned | `owned` | no |
 | subnet_cidr | The subnet cidr which you are creating, you can use this or the cidrsubnet() calculated by var.network_mask and var.network_offset | `` | no |
 | tables | A map of availability zone to routing table id, so we can association subnets | `<map>` | no |
 | tags | A map of cloud tags which added to the subnets, note Name, Env and KubernetesCluster are added by default | `<map>` | no |

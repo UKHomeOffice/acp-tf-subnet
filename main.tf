@@ -29,7 +29,7 @@ resource "aws_subnet" "subnets" {
     map("Name", format("%s-%s.%s.%s", var.name, var.zones[count.index], var.environment, var.dns_zone)),
     map("Env", var.environment),
     map("KubernetesCluster", format("%s.%s", var.environment, var.dns_zone)),
-    map(format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone), "shared"))}"
+    map(format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone), var.ownership))}"
 }
 
 # Add the association to the routing table for this availability zone

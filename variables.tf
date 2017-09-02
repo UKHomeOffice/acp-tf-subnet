@@ -44,6 +44,11 @@ variable "default_table" {
   default     = ""
 }
 
+variable "ownership" {
+  description = "Kubernetes cloud ownership tag, i.e. shared or owned"
+  default     = "owned"
+}
+
 variable "tables" {
   description = "A map of availability zone to routing table id, so we can association subnets"
   type        = "map"
