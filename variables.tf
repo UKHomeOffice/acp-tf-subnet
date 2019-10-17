@@ -36,7 +36,7 @@ variable "tags" {
 
 variable "zones" {
   description = "A list of availability zones where you want to build the subnets"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "default_table" {
@@ -46,7 +46,7 @@ variable "default_table" {
 
 variable "tables" {
   description = "A map of availability zone to routing table id, so we can association subnets"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -54,3 +54,4 @@ variable "network_mask" {
   description = "The network mask which is applied when creating the subnets"
   default     = 8
 }
+
