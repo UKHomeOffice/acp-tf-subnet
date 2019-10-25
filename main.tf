@@ -17,31 +17,54 @@
  *       }
  *
  */
+terraform {
+  required_version = ">= 0.12"
+}
 
 # Create the subnets used by the pool
 resource "aws_subnet" "subnets" {
-  count             = "${length(var.zones)}"
-  vpc_id            = "${var.vpc_id}"
-  availability_zone = "${var.zones[count.index]}"
-  cidr_block        = "${var.subnet_cidr != "" ? var.subnet_cidr : cidrsubnet(var.vpc_cidr, var.network_mask, count.index + var.network_offset)}"
+  count             = length(var.zones)
+  vpc_id            = var.vpc_id
+  availability_zone = var.zones[count.index]
+  cidr_block = var.subnet_cidr != "" ? var.subnet_cidr : cidrsubnet(
+    var.vpc_cidr,
+    var.network_mask,
+    count.index + var.network_offset,
+  )
 
-  tags = "${merge(var.tags,
-    map("Name", format("%s-%s.%s.%s", var.name, var.zones[count.index], var.environment, var.dns_zone)),
-    map("Env", var.environment),
-    map("KubernetesCluster", format("%s.%s", var.environment, var.dns_zone)),
-    map(format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone), "shared"))}"
+  tags = merge(
+    var.tags,
+    {
+      "Name" = format(
+        "%s-%s.%s.%s",
+        var.name,
+        var.zones[count.index],
+        var.environment,
+        var.dns_zone,
+      )
+    },
+    {
+      "Env" = var.environment
+    },
+    {
+      "KubernetesCluster" = format("%s.%s", var.environment, var.dns_zone)
+    },
+    {
+      format("kubernetes.io/cluster/%s.%s", var.environment, var.dns_zone) = "shared"
+    },
+  )
 }
 
 # Add the association to the routing table for this availability zone
 resource "aws_route_table_association" "zone_routes" {
-  count          = "${var.default_table == "" ? length(var.zones) : 0}"
-  subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
-  route_table_id = "${lookup(var.tables, element(aws_subnet.subnets.*.availability_zone, count.index))}"
+  count          = var.default_table == "" ? length(var.zones) : 0
+  subnet_id      = element(aws_subnet.subnets.*.id, count.index)
+  route_table_id = var.tables[element(aws_subnet.subnets.*.availability_zone, count.index)]
 }
 
 # Add the route to the default routing table instead
 resource "aws_route_table_association" "default_route" {
-  count          = "${var.default_table != "" ? length(var.zones) : 0}"
-  subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
-  route_table_id = "${var.default_table}"
+  count          = var.default_table != "" ? length(var.zones) : 0
+  subnet_id      = element(aws_subnet.subnets.*.id, count.index)
+  route_table_id = var.default_table
 }
