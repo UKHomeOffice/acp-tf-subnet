@@ -17,11 +17,8 @@
  *       }
  *
  */
-terraform {
-  required_version = ">= 0.12"
-}
-
 # Create the subnets used by the pool
+
 resource "aws_subnet" "subnets" {
   count             = length(var.zones)
   vpc_id            = var.vpc_id
